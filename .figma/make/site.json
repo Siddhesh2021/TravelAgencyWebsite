@@ -1,10 +1,14 @@
 {
+  "title": "Swati The Travel Queen",
   "description": "Offers curated group trips and adventure tours across India with easy booking, authentic experiences, and trusted trip management for travelers.",
+  "icons": {
+    "icon": "/favicon.svg"
+  },
   "robots": {
     "index": false
   },
   "accessibility": {
-    "addBypassLinks": false,
+    "addBypassLinks": true,
     "ignoreReducedMotion": false
   }
 }

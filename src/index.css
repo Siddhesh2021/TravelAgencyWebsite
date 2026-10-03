@@ -19,8 +19,10 @@
   --amber-dark: #b86a24;
   /* Amber for small text on a light photographic veil. --amber-dark is a
      display accent tuned to read on solid cream; at 11px over a photo it
-     measures 2.57:1, so anything set that small needs this deeper step. */
-  --amber-ink: #7d4210;
+     measures 2.57:1, so anything set that small needs this deeper step.
+     Deepened again from #7d4210, which still measured 4.17:1 against the
+     Explore-by-place veil — under the 4.5:1 AA bar for 11px text. */
+  --amber-ink: #6b380d;
   --amber-glow: rgba(212, 135, 62, .18);
   --forest: #1a4332;
   --forest-mid: #245740;
@@ -199,12 +201,34 @@ p { color: var(--ink-2); line-height: 1.72; }
 }
 
 .header-inner { display: flex; height: 100%; align-items: center; justify-content: space-between; }
-.logo { display: flex; align-items: center; border: 0; background: none; font-size: 23px; font-weight: 800; letter-spacing: -.055em; cursor: pointer; transition: transform .3s var(--ease-spring); }
+.logo { display: flex; align-items: center; border: 0; background: none; cursor: pointer; transition: transform .3s var(--ease-spring); }
 .logo:hover { transform: scale(1.02); }
-.logo-mark { display: grid; width: 36px; height: 36px; margin-right: 10px; place-items: center; border-radius: 10px; color: var(--white); background: linear-gradient(135deg, var(--forest), var(--forest-mid)); box-shadow: 0 2px 8px rgba(26,67,50,.25); }
-.logo-dot { color: var(--amber); }
+.logo-mark { display: grid; width: 36px; height: 36px; margin-right: 10px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--white); background: linear-gradient(135deg, var(--forest), var(--forest-mid)); box-shadow: 0 2px 8px rgba(26,67,50,.25); }
+.logo-type { display: grid; line-height: 1; text-align: left; }
+.logo-name { font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
+/* --ink rather than --ink-2: this is 9px small text, so it has to clear 4.5:1
+   against the plate as it sits over the dark hero, not just over the solid
+   header. --ink-2 only reached 3.25:1 there. */
+.logo-sub { margin-top: 3px; color: var(--ink); font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .logo--inverse { color: var(--white); }
+.logo--inverse .logo-sub { color: rgba(255,255,255,.72); }
 .logo--inverse .logo-mark { color: var(--forest); background: linear-gradient(135deg, var(--bone), #fff); box-shadow: 0 2px 8px rgba(255,255,255,.15); }
+
+/* The logo is the one header control that had no plate behind it, so it was the
+   only one whose contrast depended entirely on the backdrop. That cannot be
+   solved with a fixed colour: over the desktop hero the ink wordmark measured
+   2.06:1 on #344F48, but the mobile hero crops to bright sky (#ABC1CA) where ink
+   is correct and white is not. Giving the lockup the same plate the nav and
+   action buttons already use makes the ink wordmark work on any backdrop. */
+.header:not(.header--scrolled) .logo {
+  padding: 5px 12px 5px 5px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 13px;
+  background: rgba(255,255,255,.34);
+  box-shadow: inset 0 1px rgba(255,255,255,.7);
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+}
 
 .desktop-nav { position: relative; display: flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,.4); border-radius: 999px; background: rgba(255,255,255,.34); box-shadow: inset 0 1px rgba(255,255,255,.7); backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5); transition: background-color .5s, border-color .5s; }
 .desktop-nav button, .login {
@@ -420,6 +444,32 @@ p { color: var(--ink-2); line-height: 1.72; }
   will-change: transform;
 }
 .section--tint > .shell { position: relative; }
+
+/* ─── BACKDROP CONTAINMENT ─── */
+/* Each section photo is deliberately oversized (`inset: -14% 0; height: 128%`)
+   so the parallax translate never exposes an edge. That oversize must be clipped
+   to the section box or the photo bleeds into its neighbours — measured escaping
+   by 206px above and below the Explore-by-place section, and by 566px on
+   .scroll-journey, so the photo was painting over unrelated sections.
+   .footer-band and .page-cta already carried `overflow: hidden`. */
+.photo-bg,
+.section--tint,
+.process-section,
+.stories-section,
+.upcoming-section,
+.newsletter,
+.reels-section,
+.region-section,
+.values-section {
+  overflow: hidden;
+}
+/* .scroll-journey holds a sticky column. overflow:hidden would turn the section
+   into its own scrollport and silently kill that stick — verified: the visual
+   scrolls straight off instead of pinning. clip-path clips the same paint
+   overflow without creating a scroll container, so the stick survives intact. */
+.scroll-journey {
+  clip-path: inset(0);
+}
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 48px; }
 .section-heading > div { max-width: 720px; }
 .section-heading h2 { margin-bottom: 14px; }
@@ -1444,10 +1494,20 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   .trip-grid { display: flex; width: calc(100% + 18px); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .trip-card { flex: 0 0 86%; scroll-snap-align: start; }
   .trip-image-wrap { height: 230px; }
-  .destination-grid { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 220px); gap: 10px; }
-  .destination-card:nth-child(1), .destination-card:nth-child(6) { grid-column: span 2; }
-  .destination-info { right: 14px; bottom: 14px; left: 14px; }
-  .destination-info strong { font-size: 17px; }
+  /* Stack to a single column with the photo above a solid text panel.
+     The two-column version declared four 220px rows, but cards 1 and 6 span both
+     columns, which pushed Goa and Uttarakhand into an implicit fifth row that
+     collapsed to ~123px — shorter than their own text, so overflow:hidden cut the
+     copy off. A stacked card has no row arithmetic to get wrong, keeps the photo
+     visible instead of behind the text, and gives a full-width tap target. */
+  .destination-grid { grid-template-columns: 1fr; grid-template-rows: none; gap: 16px; }
+  .destination-card,
+  .destination-card:nth-child(1),
+  .destination-card:nth-child(6) { grid-column: auto; height: auto; display: grid; grid-template-rows: 190px auto; }
+  .destination-card img { height: 190px; }
+  .destination-card .image-shade { display: none; }
+  .destination-info { position: static; padding: 14px 16px 18px; background: var(--ink); }
+  .destination-info strong { margin-bottom: 8px; font-size: 19px; }
   .destination-info > span { opacity: 1; transform: none; }
   .category-row { display: flex; width: calc(100% + 18px); overflow-x: auto; scrollbar-width: none; }
   .category-card { flex: 0 0 82%; }

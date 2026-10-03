@@ -110,9 +110,14 @@ function Icon({ name, size = 20 }: { name: string; size?: number }) {
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
-    <button className={`logo ${inverse ? "logo--inverse" : ""}`} onClick={() => navigateTo("/")} aria-label="Roamly home">
+    <button className={`logo ${inverse ? "logo--inverse" : ""}`} onClick={() => navigateTo("/")} aria-label="Swati The Travel Queen — home">
       <span className="logo-mark"><Icon name="mountain" size={22} /></span>
-      <span>roamly<span className="logo-dot">.</span></span>
+      {/* Two-line lockup: the name is far longer than the old wordmark, so a
+          single line at header scale would crowd out the centred nav. */}
+      <span className="logo-type">
+        <span className="logo-name">Swati</span>
+        <span className="logo-sub">The Travel Queen</span>
+      </span>
     </button>
   );
 }
@@ -813,7 +818,7 @@ function ReelPlayerModal({ reel, onClose }: { reel: { title: string; copy: strin
         <button className="reel-modal-close" onClick={onClose}><Icon name="close" size={20} /></button>
         <div className="reel-modal-controls">
           <div className="reel-modal-info">
-            <span className="reel-tag"><Icon name="instagram" size={14} /> Roamly Moments</span>
+            <span className="reel-tag"><Icon name="instagram" size={14} /> Travel Queen Moments</span>
             <h3>{reel.title}</h3>
             <p>{reel.copy}</p>
             <div className="reel-stats-bar">
@@ -844,7 +849,7 @@ function ReelPlayerModal({ reel, onClose }: { reel: { title: string; copy: strin
 function FloatingConcierge() {
   const [open, setOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: "bot", text: "Hi there! 👋 I'm Arjun from the Roamly trip team. Looking for solo trips, packing guides, or custom group departures?" }
+    { sender: "bot", text: "Hi there! 👋 I'm Arjun from the Swati The Travel Queen trip team. Looking for solo trips, packing guides, or custom group departures?" }
   ]);
   const [inputVal, setInputVal] = useState("");
 
@@ -872,7 +877,7 @@ function FloatingConcierge() {
               <span className="online-dot" />
             </div>
             <div>
-              <strong>Arjun & Team Roamly</strong>
+              <strong>Arjun &amp; The Travel Queen Team</strong>
               <small>Trip Captains · Online</small>
             </div>
             <button className="icon-button" onClick={() => setOpen(false)}><Icon name="close" size={16} /></button>
@@ -1136,7 +1141,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
           </div>
         </Reveal>
         <Reveal variant="right" className="why-content">
-          <p className="eyebrow">The Roamly standard</p>
+          <p className="eyebrow">The Swati standard</p>
           <h2>Everything is planned.<br />You just show up.</h2>
           <p>Thoughtful trips, vetted boutique stays and zero fine-print surprises.</p>
           <div className="feature-list">
@@ -1197,7 +1202,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
 
       <section className="section shell social-section">
         <SectionTitle
-          eyebrow="@roamlyindia"
+          eyebrow="@swatithetravelqueen"
           title="See where our travellers are going."
           action={<Button variant="secondary" magnetic={false}><Icon name="instagram" size={18} />Follow on Instagram</Button>}
         />
@@ -1205,7 +1210,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
           <div className="social-grid">
             {[images.kashmir, images.group, images.rajasthan, images.meghalaya, images.ladakh, images.kerala].map((img, i) => (
               <div key={img} className={`social-tile social-tile--${i + 1} reveal-child`} style={{ ["--i" as string]: i }}>
-                <img src={img} alt="Roamly traveller moment" loading="lazy" decoding="async" />
+                <img src={img} alt="Swati The Travel Queen traveller moment" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>
@@ -1255,7 +1260,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
           <div className="faq-list">
             {[
               ["Can I join a group trip solo?", "Absolutely. Around 65% of our travellers join solo. We curate welcoming, friendly groups and create an introductory WhatsApp group before departure so you feel right at home."],
-              ["What is included in the trip price?", "Your verified boutique stays, private intercity transport, daily breakfast, guided cultural tours, permits, and a dedicated Roamly trip captain."],
+              ["What is included in the trip price?", "Your verified boutique stays, private intercity transport, daily breakfast, guided cultural tours, permits, and a dedicated Swati The Travel Queen trip captain."],
               ["How large are the groups?", "Most departures have 12–18 travellers: large enough to be social and lively, small enough to remain intimate and flexible."],
               ["Can I pay in simple instalments?", "Yes! Reserve your seat with just a 25% deposit today, and clear the remaining balance up to 30 days before departure."],
             ].map(([q, a], i) => (
@@ -1321,7 +1326,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
 function ReelsSection({ onOpenReel }: { onOpenReel?: (r: any) => void }) {
   const reels = [
     { title: "48 hours in Kashmir", copy: "Dal Lake shikara at 6:12 AM", image: images.kashmir, views: "128K" },
-    { title: "Why strangers become friends", copy: "A Roamly group in Ladakh", image: images.group, views: "94K" },
+    { title: "Why strangers become friends", copy: "A Swati The Travel Queen group in Ladakh", image: images.group, views: "94K" },
     { title: "The road into Meghalaya", copy: "Rain, roots and hidden rivers", image: images.meghalaya, views: "81K" },
     { title: "Golden hour in Jaisalmer", copy: "Desert camp diaries under stars", image: images.rajasthan, views: "76K" },
   ];
@@ -1331,7 +1336,7 @@ function ReelsSection({ onOpenReel }: { onOpenReel?: (r: any) => void }) {
       <img src={backdrops.goa} alt="" aria-hidden="true" loading="lazy" decoding="async" />
       <div className="shell">
         <SectionTitle
-          eyebrow="Roamly, in motion"
+          eyebrow="Swati, in motion"
           title="Watch the journey unfold."
           copy="Raw moments, real groups, and the unscripted laughs that make every departure unforgettable."
           action={<Button variant="secondary" magnetic={false}><Icon name="instagram" size={18} />Watch all reels</Button>}
@@ -1656,7 +1661,7 @@ function AboutPage({ onOpenReel }: { onOpenReel: (r: any) => void }) {
       <PageHero
         eyebrow="Our story"
         title="Travel more. Plan less."
-        copy="Roamly was built to make small-group exploration across India effortless, human and genuinely unforgettable."
+        copy="Swati The Travel Queen was built to make small-group exploration across India effortless, human and genuinely unforgettable."
         image={images.friends}
       />
       <section className="section shell about-intro">
@@ -1814,7 +1819,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
                 "Pahalgam riverside meadow trail",
                 "Traditional Wazwan family dinner",
                 "Handpicked heritage houseboat stays",
-                "Dedicated certified Roamly captain",
+                "Dedicated certified Travel Queen captain",
               ].map(x => (
                 <div key={x}>
                   <Icon name="check" size={17} />{x}
@@ -1857,7 +1862,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
                   "4 breakfasts & 2 traditional dinners",
                   "All listed guided heritage tours & permits",
                   "Dal Lake shikara ride tickets",
-                  "Dedicated Roamly trip captain throughout",
+                  "Dedicated Travel Queen trip captain throughout",
                   "24/7 on-trip concierge and emergency support",
                 ].map(x => (
                   <p className="check-row" key={x}>
@@ -2070,7 +2075,7 @@ function BookingFlow({ currency = "INR" }: { currency?: string }) {
                   <Icon name="users" />
                   <p>
                     <strong>Travelling solo?</strong><br />
-                    You’re in wonderful company — over 65% of Roamly travellers embark on their journey solo!
+                    You’re in wonderful company — over 65% of our travellers embark on their journey solo!
                   </p>
                 </div>
               </>
@@ -2261,7 +2266,7 @@ function Footer() {
           ))}
         </div>
         <div className="shell footer-bottom">
-          <span>© 2025 Roamly Travel Co. Private Limited · All Rights Reserved</span>
+          <span>© 2025 Swati The Travel Queen · All Rights Reserved</span>
           <span className="footer-legal">
             <button onClick={() => navigateTo("/about")}>Privacy policy</button>
             <button onClick={() => navigateTo("/about")}>Terms of service</button>

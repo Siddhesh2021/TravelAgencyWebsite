@@ -5,13 +5,15 @@ import mr from "./mr.json";
 export type Language = "en" | "mr";
 export const translations: Record<Language, Record<string, string>> = { en, mr };
 
-const STORAGE_KEY = "roamly-language";
-const EVENT_NAME = "roamly-language-change";
+const STORAGE_KEY = "swati-language";
+const LEGACY_STORAGE_KEY = "roamly-language";
+const EVENT_NAME = "swati-language-change";
 const originalText = new WeakMap<Text, string>();
 
 export function getLanguage(): Language {
   if (typeof window === "undefined") return "en";
-  return localStorage.getItem(STORAGE_KEY) === "mr" ? "mr" : "en";
+  const saved = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
+  return saved === "mr" ? "mr" : "en";
 }
 
 export function setLanguage(language: Language) {

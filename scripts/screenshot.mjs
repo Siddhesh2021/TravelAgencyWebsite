@@ -1,5 +1,5 @@
 /**
- * Page-by-page screenshot capture for the Roamly site.
+ * Page-by-page screenshot capture for the Swati The Travel Queen site.
  *
  * Produces two kinds of shot per route:
  *   <route>-NN-<label>.png  viewport-sized filmstrip frames taken at successive

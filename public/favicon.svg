@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Swati The Travel Queen">
+  <defs>
+    <linearGradient id="forest" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0C2A1E" />
+      <stop offset="1" stop-color="#245740" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#forest)" />
+  <!-- Peak, echoing the mountain glyph in the in-app logo mark -->
+  <path d="M12 44 L26 22 L34 34 L39 27 L52 44 Z" fill="#F7F5F0" />
+  <path d="M26 22 L30.5 29.5 L23 27.5 Z" fill="#FFFFFF" opacity=".55" />
+  <!-- Amber dot, echoing the period in the wordmark -->
+  <circle cx="46" cy="17" r="4" fill="#D4873E" />
+</svg>
