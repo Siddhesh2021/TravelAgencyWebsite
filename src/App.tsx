@@ -1,5 +1,6 @@
 import { CSSProperties, FormEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createBrowserRouter, RouterProvider, useLocation, useNavigate } from "react-router";
+import { I18nProvider, LanguageSelector } from "./i18n";
 
 const images = {
   hero: "https://images.unsplash.com/photo-1627894485200-b92fb4353967?auto=format&fit=crop&w=2200&q=88",
@@ -571,6 +572,7 @@ function Header({ onMenu, currentPath, onOpenSearch, currency, onCurrencyChange 
           ))}
         </nav>
         <div className="header-actions">
+          <LanguageSelector />
           <div className="currency-selector">
             <select value={currency} onChange={(e) => onCurrencyChange(e.target.value)} aria-label="Select Currency">
               <option value="INR">INR (₹)</option>
@@ -2415,5 +2417,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <I18nProvider>
+      <RouterProvider router={router} />
+    </I18nProvider>
+  );
 }
