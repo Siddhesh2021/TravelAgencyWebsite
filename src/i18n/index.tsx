@@ -7,6 +7,7 @@ export const translations: Record<Language, Record<string, string>> = { en, mr }
 
 const STORAGE_KEY = "roamly-language";
 const EVENT_NAME = "roamly-language-change";
+const originalText = new WeakMap<Text, string>();
 
 export function getLanguage(): Language {
   if (typeof window === "undefined") return "en";
@@ -32,11 +33,13 @@ function translateTree(language: Language) {
     nodes.push(text);
   }
   nodes.forEach((text) => {
-    const original = text.getAttribute("data-i18n-original") ?? text.textContent ?? "";
-    if (!text.getAttribute("data-i18n-original")) text.setAttribute("data-i18n-original", original);
-    const value = dictionary[original.trim()];
-    if (value && original.trim() === original) text.textContent = value;
-    else if (value) text.textContent = original.replace(original.trim(), value);
+    const original = originalText.get(text) ?? text.textContent ?? "";
+    if (!originalText.has(text)) originalText.set(text, original);
+    const trimmed = original.trim();
+    const value = dictionary[trimmed];
+    if (!value) return;
+    const translated = original === trimmed ? value : original.replace(trimmed, value);
+    if (text.textContent !== translated) text.textContent = translated;
   });
 }
 
