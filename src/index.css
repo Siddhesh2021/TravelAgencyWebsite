@@ -2227,3 +2227,53 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   .destination-info > span, .destination-page-card em { opacity: 1; transform: none; }
 }
 
+
+
+/* ─── LANGUAGE SELECTOR ─── */
+.language-selector {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.language-selector select {
+  min-height: 34px;
+  padding: 6px 28px 6px 10px;
+  border: 1px solid var(--soft-line, rgba(16,37,30,.12));
+  border-radius: 999px;
+  background: rgba(255,255,255,.86);
+  color: var(--ink, #10251e);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+.language-selector select:focus-visible {
+  box-shadow: 0 0 0 3px var(--amber-glow, rgba(212,135,62,.18));
+  border-color: var(--amber, #d4873e);
+}
+.header:not(.header--scrolled) .language-selector select {
+  background: rgba(255,255,255,.16);
+  color: inherit;
+  border-color: rgba(255,255,255,.28);
+}
+.header:not(.header--scrolled) .language-selector select option {
+  color: var(--ink, #10251e);
+  background: #fff;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 760px) {
+  .language-selector {
+    display: none;
+  }
+}
