@@ -1,0 +1,10 @@
+{
+  "description": "Offers curated group trips and adventure tours across India with easy booking, authentic experiences, and trusted trip management for travelers.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
