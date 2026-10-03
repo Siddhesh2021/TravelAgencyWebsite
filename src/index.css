@@ -2273,7 +2273,10 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   border: 0;
 }
 @media (max-width: 760px) {
-  .language-selector {
-    display: none;
+  .language-selector select {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 11px;
+    background: rgba(255,255,255,.92);
   }
 }
