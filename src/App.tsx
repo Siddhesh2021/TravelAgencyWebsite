@@ -52,21 +52,15 @@ interface Trip {
 const trips: Trip[] = [
   { id: "kashmir", name: "Kashmir", line: "Valleys, lakes & mountain villages", duration: "5D / 4N", date: "18–22 Oct", priceInr: 24999, badge: "Culture & nature", image: images.kashmir, seats: "12 seats left", category: "Culture", rating: 4.9, reviewsCount: 128, trending: true },
   { id: "ladakh", name: "Ladakh", line: "High-altitude roads & unforgettable landscapes", duration: "7D / 6N", date: "24–30 Oct", priceInr: 34999, badge: "Adventure", image: images.ladakh, seats: "8 seats left", category: "Adventure", rating: 4.95, reviewsCount: 94, trending: true },
-  { id: "meghalaya", name: "Meghalaya", line: "Waterfalls, caves & living root bridges", duration: "6D / 5N", date: "02–07 Nov", priceInr: 27999, badge: "Slow travel", image: images.meghalaya, seats: "15 seats left", category: "Solo-friendly", rating: 4.88, reviewsCount: 82 },
-  { id: "kerala", name: "Kerala", line: "Backwaters, beaches & slow travel", duration: "5D / 4N", date: "09–13 Nov", priceInr: 21999, badge: "Coastal", image: images.kerala, seats: "Filling fast", category: "Weekend", rating: 4.92, reviewsCount: 110 },
-  { id: "rajasthan", name: "Rajasthan", line: "Forts, deserts & royal cities", duration: "6D / 5N", date: "16–21 Nov", priceInr: 25999, badge: "Culture", image: images.rajasthan, seats: "10 seats left", category: "Culture", rating: 4.86, reviewsCount: 76 },
-  { id: "himachal", name: "Himachal", line: "Mountains, forests & Himalayan towns", duration: "5D / 4N", date: "28 Nov–02 Dec", priceInr: 19999, badge: "Weekend+", image: images.himachal, seats: "6 seats left", category: "Weekend", rating: 4.91, reviewsCount: 145, trending: true },
+  { id: "meghalaya", name: "Meghalaya", line: "Waterfalls, caves & living root bridges", duration: "6D / 5N", date: "02–07 Nov", priceInr: 27999, badge: "Slow travel", image: images.meghalaya, seats: "15 seats left", category: "Nature", rating: 4.88, reviewsCount: 82 },
+  { id: "kerala", name: "Kerala", line: "Backwaters, beaches & slow travel", duration: "5D / 4N", date: "09–13 Nov", priceInr: 21999, badge: "Coastal", image: images.kerala, seats: "Filling fast", category: "Coastal", rating: 4.92, reviewsCount: 110 },
 ];
 
 const destinations = [
-  ["Kashmir", "Alpine valleys & old Srinagar", images.kashmir, "5 Trips Available"],
-  ["Ladakh", "High passes & quiet monasteries", images.ladakh, "4 Trips Available"],
-  ["Himachal Pradesh", "Forest trails & mountain towns", images.himachal, "8 Trips Available"],
-  ["Rajasthan", "Desert stories & royal cities", images.rajasthan, "6 Trips Available"],
-  ["Kerala", "Backwaters & a slower rhythm", images.kerala, "5 Trips Available"],
-  ["Meghalaya", "Rainforests & hidden falls", images.meghalaya, "3 Trips Available"],
-  ["Goa", "Coastal roads & old quarters", images.goa, "4 Trips Available"],
-  ["Uttarakhand", "Sacred towns & Himalayan trails", images.uttarakhand, "7 Trips Available"],
+  ["Kashmir", "Alpine valleys & old Srinagar", images.kashmir, "5 Days / 4 Nights"],
+  ["Ladakh", "High passes & quiet monasteries", images.ladakh, "7 Days / 6 Nights"],
+  ["Meghalaya", "Rainforests & hidden falls", images.meghalaya, "6 Days / 5 Nights"],
+  ["Kerala", "Backwaters & a slower rhythm", images.kerala, "5 Days / 4 Nights"],
 ];
 
 /**
@@ -572,10 +566,11 @@ function Header({ onMenu, currentPath, onOpenSearch }: { onMenu: () => void; cur
   const progressRef = useRef<HTMLSpanElement>(null);
 
   const links = [
-    ["Explore Trips", "/trips"],
-    ["Destinations", "/destinations"],
-    ["Experiences", "/experiences"],
+    ["Home", "/"],
+    ["Tours", "/trips"],
+    ["Reviews", "/reviews"],
     ["About Us", "/about"],
+    ["Contact Us", "/contact"],
   ];
 
   useEffect(() => {
@@ -617,12 +612,7 @@ function Header({ onMenu, currentPath, onOpenSearch }: { onMenu: () => void; cur
         </nav>
         <div className="header-actions">
           <LanguageSelector />
-          <button className="icon-button search-button" aria-label="Search journeys" onClick={onOpenSearch}>
-            <Icon name="search" />
-            <span className="kbd-hint">⌘K</span>
-          </button>
-          <button className="login" onClick={() => navigateTo("/booking")}>My Trips</button>
-          <Button onClick={() => navigateTo("/trips")} icon="arrow">Find a Trip</Button>
+          <Button onClick={() => navigateTo("/trips")} icon="arrow">Book a Tour</Button>
           <button className="icon-button menu-button" onClick={onMenu} aria-label="Open menu">
             <Icon name="menu" />
           </button>
@@ -1026,15 +1016,10 @@ function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenRe
             <h1>Trips you’ll remember.<br />Stories you’ll keep.</h1>
             <p>Curated group journeys across India’s most awe-inspiring landscapes. Designed for people who want to experience more and plan zero.</p>
             <div className="hero-actions">
-              <Button onClick={() => document.querySelector("#trips")?.scrollIntoView({ behavior: "smooth" })} icon="arrow">
-                Explore Departures
-              </Button>
-              <Button variant="light" onClick={onOpenQuiz} icon="sparkles">
-                Trip Style Matcher
-              </Button>
+              <Button onClick={() => navigateTo("/trips")} icon="arrow">View Our Tours</Button>
+              <Button variant="light" onClick={() => navigateTo("/contact")}>Plan My Trip</Button>
             </div>
           </div>
-          <SearchModule />
         </div>
       </section>
 
@@ -1058,10 +1043,10 @@ function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenRe
 
       <section className="section shell" id="trips">
         <SectionTitle
-          eyebrow="Curated departures"
-          title="Where will you go next?"
-          copy="Handpicked journeys across India, paced for genuine exploration with solo-friendly group vibes."
-          action={<Button variant="secondary" icon="arrow" onClick={() => navigateTo("/trips")}>View all 48 trips</Button>}
+          eyebrow="Our tours"
+          title="Four places. One great journey."
+          copy="We currently take small groups to four carefully chosen destinations across India."
+          action={<Button variant="secondary" icon="arrow" onClick={() => navigateTo("/trips")}>View all tours</Button>}
         />
         <Reveal className="reveal-parent">
           <div className="trip-grid">
@@ -1078,22 +1063,22 @@ function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenRe
         </Reveal>
       </section>
 
-      <section className="section photo-bg section--tint" id="destinations">
-        <img src={backdrops.himachal} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      <section className="section photo-bg section--tint home-destinations" id="destinations">
+        <img src={backdrops.kerala} alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <div className="shell">
           <SectionTitle
-            eyebrow="Explore by place"
-            title="India, one journey at a time."
-            copy="From high Himalayan mountain passes to silent emerald backwaters, find the horizon that calls you."
+            eyebrow="Four destinations"
+            title="Small enough to feel personal."
+            copy="No endless menus. No overwhelming choice. Just four destinations we know well."
           />
           <Reveal className="reveal-parent">
-            <div className="destination-grid">
+            <div className="destination-grid destination-grid--four">
               {destinations.map(([name, line, image, meta], i) => (
                 <button
-                  className={`destination-card destination-card--${i + 1} reveal-child spotlight spotlight--dark`}
+                  className="destination-card reveal-child spotlight spotlight--dark"
                   key={name}
                   style={{ ["--i" as string]: i }}
-                  onClick={() => navigateTo("/destinations")}
+                  onClick={() => navigateTo(`/trips/${name.toLowerCase()}`)}
                 >
                   <img src={image} alt={`${name} landscape`} loading="lazy" decoding="async" />
                   <span className="image-shade" />
@@ -1101,7 +1086,7 @@ function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenRe
                     <small>{line}</small>
                     <strong>{name}</strong>
                     <span className="destination-meta-pill">{meta}</span>
-                    <span className="dest-explore-link">Explore <Icon name="arrow" size={16} /></span>
+                    <span className="dest-explore-link">View tour <Icon name="arrow" size={16} /></span>
                   </span>
                 </button>
               ))}
@@ -1112,27 +1097,14 @@ function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenRe
 
       <ScrollJourney />
 
-      <section className="section shell" id="categories">
-        <SectionTitle eyebrow="Find your kind of journey" title="Go for what moves you." />
-        <Reveal className="reveal-parent">
-          <div className="category-row">
-            {[
-              ["clock", "Weekend Getaways", "2–4 days"],
-              ["compass", "Adventure", "For the wild-hearted"],
-              ["mountain", "Mountains", "Higher perspectives"],
-              ["star", "Cultural", "Stories & traditions"],
-              ["users", "Group Trips", "Come solo, leave together"],
-              ["shield", "Solo-Friendly", "Safe, social, supported"],
-            ].map(([icon, title, line], i) => (
-              <button className="category-card reveal-child" key={title} style={{ ["--i" as string]: i }} onClick={() => navigateTo("/trips")}>
-                <span><Icon name={icon} /></span>
-                <strong>{title}</strong>
-                <small>{line}</small>
-                <Icon name="arrow" size={18} />
-              </button>
-            ))}
-          </div>
-        </Reveal>
+      <section className="section shell home-review-preview">
+        <SectionTitle
+          eyebrow="Real travellers. Real experiences."
+          title="See why people travel with us."
+          copy="Watch our reels and read stories from travellers who have been on the road with us."
+          action={<Button variant="secondary" icon="arrow" onClick={() => navigateTo("/reviews")}>See all reviews</Button>}
+        />
+        <ReelsSection onOpenReel={onOpenReel} />
       </section>
 
       <section className="section process-section" id="process">
@@ -2265,6 +2237,89 @@ function BookingFlow() {
   );
 }
 
+function ReviewsPage({ onOpenReel }: { onOpenReel: (r: any) => void }) {
+  const reviews = [
+    ["Aarav Mehta", "Mumbai", "Kashmir", "“Everything was handled so smoothly. We could actually enjoy the trip instead of worrying about logistics.”", images.kashmir],
+    ["Priya Kulkarni", "Pune", "Kerala", "“The group was small, the planning was thoughtful and the local experiences were the best part.”", images.kerala],
+    ["Rohan Shah", "Mumbai", "Ladakh", "“From the first WhatsApp message to the final day, the team was genuinely helpful.”", images.ladakh],
+    ["Sneha Patil", "Pune", "Meghalaya", "“Beautiful route, great people and zero stress. I would absolutely travel with them again.”", images.meghalaya],
+  ];
+
+  return (
+    <main>
+      <PageHero
+        eyebrow="Traveller stories"
+        title="Real people. Real journeys."
+        copy="Watch our latest travel reels and hear directly from people who have travelled with us."
+        image={images.meghalaya}
+      />
+      <section className="section shell">
+        <SectionTitle eyebrow="Traveller reels" title="See the journey through their eyes." />
+        <ReelsSection onOpenReel={onOpenReel} />
+      </section>
+      <section className="section shell">
+        <SectionTitle eyebrow="Reviews" title="What our travellers say." copy="A few words from people who have joined our journeys." />
+        <div className="review-grid">
+          {reviews.map(([name, city, trip, copy, image]) => (
+            <article className="review-card" key={name}>
+              <img src={image} alt="" loading="lazy" />
+              <div className="review-card__body">
+                <div className="review-stars">★★★★★</div>
+                <p>{copy}</p>
+                <strong>{name}</strong>
+                <small>{city} · {trip}</small>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="page-cta">
+        <div className="shell">
+          <div>
+            <p className="eyebrow eyebrow--light">Your turn</p>
+            <h2>Ready to make your own travel story?</h2>
+          </div>
+          <Button onClick={() => navigateTo("/trips")} icon="arrow">View Tours</Button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ContactPage() {
+  return (
+    <main>
+      <PageHero
+        eyebrow="Let's plan your trip"
+        title="Tell us where you want to go."
+        copy="Have a question, want a custom plan, or simply need help choosing a tour? Talk to our team."
+        image={images.kashmir}
+      />
+      <section className="section shell contact-layout">
+        <div>
+          <p className="eyebrow">Get in touch</p>
+          <h2>One message is all it takes.</h2>
+          <p className="lead">Message us on WhatsApp for tour dates, availability, pricing and anything else you want to know.</p>
+          <div className="contact-actions">
+            <Button icon="message" onClick={() => window.open("https://wa.me/919999999999", "_blank")}>Chat on WhatsApp</Button>
+            <Button variant="secondary" icon="phone" onClick={() => window.location.href = "tel:+919999999999"}>Call Us</Button>
+          </div>
+        </div>
+        <div className="contact-card">
+          <span className="contact-card__icon"><Icon name="message" size={22} /></span>
+          <h3>Prefer to talk first?</h3>
+          <p>Our team can help you choose the right destination, explain what's included and guide you through booking.</p>
+          <ul>
+            <li><Icon name="check" size={16} />Tour dates & availability</li>
+            <li><Icon name="check" size={16} />Pricing & inclusions</li>
+            <li><Icon name="check" size={16} />Custom group enquiries</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function Footer() {
   const bandRef = useParallax<HTMLDivElement>(0.2);
 
@@ -2288,15 +2343,15 @@ function Footer() {
             </div>
           </div>
           {[
-            ["Explore", "All Departures,Destinations,Experience Collections,Upcoming Trips"],
-            ["Company", "Our Story,Meet the Captains,Safety Standards,Careers"],
-            ["Traveller Care", "FAQs,Cancellation & Refunds,Packing Guides,WhatsApp Support"],
-            ["Connect", "Instagram,YouTube,Community Stories,Newsletter"],
+            ["Explore", [["Home", "/"], ["Tours", "/trips"], ["Reviews", "/reviews"]]],
+            ["Company", [["About Us", "/about"], ["Contact Us", "/contact"]]],
+            ["Help", [["FAQs", "/about"], ["Cancellation & Refunds", "/about"]]],
+            ["Connect", [["Instagram", "/reviews"], ["WhatsApp", "/contact"]]],
           ].map(([title, links]) => (
-            <div className="footer-col" key={title}>
+            <div className="footer-col" key={title as string}>
               <strong>{title}</strong>
-              {links.split(",").map((x) => (
-                <button key={x} onClick={() => navigateTo("/trips")}>{x}</button>
+              {(links as [string, string][]).map(([label, path]) => (
+                <button key={label} onClick={() => navigateTo(path)}>{label}</button>
               ))}
             </div>
           ))}
@@ -2379,10 +2434,11 @@ function SiteLayout() {
           </div>
           <nav>
             {[
-              ["Explore Trips", "/trips"],
-              ["Destinations", "/destinations"],
-              ["Experiences", "/experiences"],
+              ["Home", "/"],
+              ["Tours", "/trips"],
+              ["Reviews", "/reviews"],
               ["About Us", "/about"],
+              ["Contact Us", "/contact"],
             ].map(([label, path], i) => (
               <button key={path} style={{ animationDelay: `${80 + i * 60}ms` }} onClick={() => navigateTo(path)}>
                 {label}
@@ -2391,10 +2447,8 @@ function SiteLayout() {
             ))}
           </nav>
           <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Button onClick={() => { setIsQuizOpen(true); setMenu(false); }} variant="secondary" icon="sparkles">
-              Trip Style Matcher
-            </Button>
-            <Button onClick={() => navigateTo("/trips")}>Find a Trip</Button>
+            <Button onClick={() => navigateTo("/trips")} icon="arrow">Book a Tour</Button>
+            <Button onClick={() => navigateTo("/contact")} variant="secondary">Contact Us</Button>
           </div>
         </div>
       )}
@@ -2402,12 +2456,12 @@ function SiteLayout() {
       <div className="route-transition" key={location.pathname} id="main-content">
         {location.pathname === "/" && <HomePage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
         {location.pathname === "/trips" && <TripsPage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
-        {location.pathname === "/destinations" && <DestinationsPage onOpenReel={setActiveReel} />}
-        {location.pathname === "/experiences" && <ExperiencesPage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
+        {location.pathname === "/reviews" && <ReviewsPage onOpenReel={setActiveReel} />}
+        {location.pathname === "/contact" && <ContactPage />}
         {location.pathname === "/about" && <AboutPage onOpenReel={setActiveReel} />}
         {location.pathname.startsWith("/trips/") && <TripDetail />}
         {location.pathname === "/booking" && <BookingFlow />}
-        {!["/", "/trips", "/destinations", "/experiences", "/about", "/booking"].includes(location.pathname) && !location.pathname.startsWith("/trips/") && <NotFound />}
+        {!["/", "/trips", "/reviews", "/contact", "/about", "/booking"].includes(location.pathname) && !location.pathname.startsWith("/trips/") && <NotFound />}
       </div>
 
       {!isBooking && <Footer />}
