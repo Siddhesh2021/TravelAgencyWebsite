@@ -111,7 +111,11 @@ function Icon({ name, size = 20 }: { name: string; size?: number }) {
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <button className={`logo ${inverse ? "logo--inverse" : ""}`} onClick={() => navigateTo("/")} aria-label="Swati The Travel Queen — home">
-      <span className="logo-mark"><Icon name="mountain" size={22} /></span>
+      <span className="logo-mark">
+        {/* Circular crop of the supplied artwork, transparent outside the disc.
+            alt is empty because the button already carries the full name. */}
+        <img src="/logo-mark.webp" alt="" width={36} height={36} decoding="async" />
+      </span>
       {/* Two-line lockup: the name is far longer than the old wordmark, so a
           single line at header scale would crowd out the centred nav. */}
       <span className="logo-type">
@@ -139,27 +143,67 @@ function useReducedMotion() {
   return reduced;
 }
 
-/** Adds `.visible` once the element scrolls into view. */
-function useReveal<T extends HTMLElement>(options?: { threshold?: number; rootMargin?: string }) {
-  const ref = useRef<T>(null);
+/**
+ * Reveal engine for the whole app.
+ *
+ * `.reveal-child` is unconditionally `opacity: 0` in CSS and only `.reveal-parent.visible`
+ * can bring it back, so a trigger that never fires hides content permanently. Observing each
+ * parent per-component made that failure silent and easy to hit: `<section className="trust-strip
+ * reveal-parent">` and the /trips grid both carried `.reveal-child` markup with no observer
+ * attached, and their content simply never painted. Here `.reveal-parent` owns its own
+ * trigger, so any element carrying the class reveals whether it was written as `<Reveal>` or
+ * hand-authored — the class stops depending on a developer remembering an extra step.
+ */
+function useRevealParents() {
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const seenRef = useRef<Set<Element>>(new Set());
+
   useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
+    if (typeof IntersectionObserver === "undefined") return;
+    const seen = seenRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            node.classList.add("visible");
-            observer.unobserve(node);
-          }
-        });
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add("visible");
+          seen.delete(entry.target);
+          observer.unobserve(entry.target);
+        }
       },
-      { threshold: options?.threshold ?? 0.12, rootMargin: options?.rootMargin ?? "0px 0px -8% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [options?.threshold, options?.rootMargin]);
-  return ref;
+    observerRef.current = observer;
+    return () => {
+      observer.disconnect();
+      seen.clear();
+      observerRef.current = null;
+    };
+  }, []);
+
+  // Re-scan after every commit. Running on each render rather than only on route change
+  // catches parents that mount late (filtered results, expanded panels) without the cost
+  // of a scroll listener; the Set keeps it idempotent, so repeat scans are cheap.
+  useEffect(() => {
+    const observer = observerRef.current;
+    if (!observer) return;
+    const scan = () => {
+      const seen = seenRef.current;
+      // forget nodes that left the document so the Set cannot grow without bound
+      for (const el of seen) {
+        if (el.isConnected) continue;
+        observer.unobserve(el);
+        seen.delete(el);
+      }
+      document.querySelectorAll(".reveal-parent:not(.visible)").forEach((el) => {
+        if (seen.has(el)) return;
+        seen.add(el);
+        observer.observe(el);
+      });
+    };
+    scan();
+    const frame = requestAnimationFrame(scan);
+    return () => cancelAnimationFrame(frame);
+  });
 }
 
 /** Wrapper that reveals itself and cascades `--i` to `.reveal-child` descendants. */
@@ -174,10 +218,9 @@ function Reveal({
   variant?: "left" | "right" | "scale" | "clip" | "";
   style?: CSSProperties;
 }) {
-  const ref = useReveal<HTMLDivElement>();
   const classes = ["reveal-parent", "reveal", variant ? `reveal--${variant}` : "", className].filter(Boolean).join(" ");
   return (
-    <div ref={ref} className={classes} style={style}>
+    <div className={classes} style={style}>
       {children}
     </div>
   );
@@ -606,7 +649,9 @@ function Header({ onMenu, currentPath, onOpenSearch, currency, onCurrencyChange 
 
 function SectionTitle({ eyebrow, title, copy, action }: { eyebrow?: string; title: string; copy?: string; action?: ReactNode }) {
   return (
-    <div className="section-heading reveal-parent">
+    // No `reveal-parent` here: the children are `.reveal` in their own right and there are no
+    // `.reveal-child` descendants, so the class would be decorative.
+    <div className="section-heading">
       <Reveal>
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h2>{title}</h2>
@@ -1508,11 +1553,15 @@ function TripsPage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: st
           </div>
           <span>Showing {filteredTrips.length} of 48 departures</span>
         </div>
-        <div className="trip-grid">
-          {filteredTrips.map(trip => (
-            <TripCard key={trip.id} trip={trip} currency={currency} />
-          ))}
-        </div>
+        {/* TripCard hardcodes `reveal-child`, which only un-hides under a `.reveal-parent.visible`.
+            Rendered bare here, the grid had no trigger at all and stayed at opacity 0. */}
+        <Reveal>
+          <div className="trip-grid">
+            {filteredTrips.map((trip, i) => (
+              <TripCard key={trip.id} trip={trip} currency={currency} index={i} />
+            ))}
+          </div>
+        </Reveal>
         <div className="load-more">
           <Button variant="secondary" icon="arrow">Load more journeys</Button>
         </div>
@@ -2297,6 +2346,8 @@ function SiteLayout() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.pathname]);
+
+  useRevealParents();
 
   useEffect(() => {
     document.body.style.overflow = (menu || isSearchOpen || isQuizOpen || activeReel) ? "hidden" : "";

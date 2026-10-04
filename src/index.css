@@ -203,7 +203,8 @@ p { color: var(--ink-2); line-height: 1.72; }
 .header-inner { display: flex; height: 100%; align-items: center; justify-content: space-between; }
 .logo { display: flex; align-items: center; border: 0; background: none; cursor: pointer; transition: transform .3s var(--ease-spring); }
 .logo:hover { transform: scale(1.02); }
-.logo-mark { display: grid; width: 36px; height: 36px; margin-right: 10px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--white); background: linear-gradient(135deg, var(--forest), var(--forest-mid)); box-shadow: 0 2px 8px rgba(26,67,50,.25); }
+.logo-mark { display: grid; width: 36px; height: 36px; margin-right: 10px; flex: 0 0 auto; place-items: center; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 8px rgba(26,67,50,.25), 0 0 0 1px rgba(15,23,20,.08); }
+.logo-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .logo-type { display: grid; line-height: 1; text-align: left; }
 .logo-name { font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
 /* --ink rather than --ink-2: this is 9px small text, so it has to clear 4.5:1
@@ -212,7 +213,9 @@ p { color: var(--ink-2); line-height: 1.72; }
 .logo-sub { margin-top: 3px; color: var(--ink); font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .logo--inverse { color: var(--white); }
 .logo--inverse .logo-sub { color: rgba(255,255,255,.72); }
-.logo--inverse .logo-mark { color: var(--forest); background: linear-gradient(135deg, var(--bone), #fff); box-shadow: 0 2px 8px rgba(255,255,255,.15); }
+/* The mark is artwork now, so the inverse variant only needs the shadow to lift off
+   the dark footer rather than a light plate behind it. */
+.logo--inverse .logo-mark { box-shadow: 0 2px 10px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.22); }
 
 /* The logo is the one header control that had no plate behind it, so it was the
    only one whose contrast depended entirely on the backdrop. That cannot be
@@ -1221,7 +1224,9 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
 .scroll-intro > p:last-child { max-width: 430px; color: var(--muted); }
 .scroll-chapters article { min-height: 76vh; padding: 90px 0; opacity: .3; transition: opacity .5s var(--ease-out-expo), transform .5s var(--ease-out-expo); transform: translateX(14px); }
 .scroll-chapters article.active { opacity: 1; transform: none; }
-.scroll-chapters article > span { display: block; width: fit-content; margin-bottom: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--amber-dark); font-size: 10px; font-weight: 700; }
+/* --amber-ink, not --amber-dark: this is 10px copy on a near-paper surface, and
+   --amber-dark measured 3.69:1 there, under the 4.5:1 AA bar. */
+.scroll-chapters article > span { display: block; width: fit-content; margin-bottom: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--amber-ink); font-size: 10px; font-weight: 700; }
 .scroll-chapters article small { color: var(--forest); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 .scroll-chapters article h3 { max-width: 480px; margin: 12px 0 18px; font-size: 36px; line-height: 1.15; }
 .scroll-chapters article p { max-width: 500px; color: var(--muted); }
@@ -1568,17 +1573,6 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   .confirmation-card { align-items: start; }
   .confirmation-card img { width: 100px; height: 110px; }
   .confirmation-actions { flex-direction: column; }
-  .scroll-journey { padding: 0 0 60px; }
-  .scroll-journey-layout { display: block; width: 100%; }
-  .scroll-visual { z-index: 1; top: 64px; width: 100%; height: 52vh; min-height: 390px; border-radius: 0; }
-  .scroll-location { right: 18px; bottom: 18px; left: 18px; }
-  .scroll-progress { top: 18px; right: 18px; }
-  .scroll-chapters { position: relative; z-index: 2; padding: 0 18px; }
-  .scroll-intro { min-height: auto; margin: 0 -18px; padding: 64px 18px 34px; background: var(--paper); }
-  .scroll-intro h2 { font-size: 34px; }
-  .scroll-chapters article { min-height: 62vh; margin-block: 22px; padding: 48px 26px; border: 1px solid rgba(255,255,255,.7); border-radius: 16px; background: rgba(247,245,240,.9); box-shadow: var(--shadow); backdrop-filter: blur(16px); opacity: .55; }
-  .scroll-chapters article.active { opacity: 1; }
-  .scroll-chapters article h3 { font-size: 29px; }
   .route-transition { animation-duration: .35s; }
   .reels-track { display: flex; width: calc(100% + 18px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .reel-card { flex: 0 0 72%; scroll-snap-align: start; }
@@ -1618,6 +1612,51 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
 
   /* Hide scroll bg on mobile for performance */
   .scroll-bg-wrap { display: none; }
+}
+
+/* ─── SCROLL JOURNEY · MOBILE ───
+   At 740px and below the section used to put the photo behind translucent "glass"
+   cards: .scroll-chapters carried z-index 2 over a z-index 1 .scroll-visual, and
+   each article was min-height 62vh, so the cards slid over the picture and buried
+   it. Here the photo is a small frame pinned under the header and the cards run in
+   normal flow beneath it, so the image is never covered — the chapter cards pass
+   behind the frame instead. Which frame is showing is already driven by the
+   component's IntersectionObserver, so no JS change was needed. */
+@media (max-width: 768px) {
+  .scroll-journey { padding: 0 0 60px; }
+  .scroll-journey-layout { display: block; width: 100%; }
+  /* Pinned frame. z-index 2 puts it above .scroll-chapters (z-index 1) so the cards
+     pass behind it; top 64px clears the 64px mobile header. */
+  .scroll-visual {
+    z-index: 2;
+    top: 64px;
+    width: auto;
+    height: 280px;
+    min-height: 0;
+    max-height: none;
+    margin: 0 18px;
+    border-radius: 18px;
+  }
+  .scroll-location { right: 18px; bottom: 16px; left: 18px; }
+  .scroll-progress { top: 16px; right: 16px; }
+  .scroll-chapters { position: relative; z-index: 1; padding: 0 18px; }
+  .scroll-intro { min-height: auto; margin: 0 -18px; padding: 56px 18px 30px; background: var(--paper); }
+  .scroll-intro h2 { font-size: 34px; }
+  /* Solid rather than translucent: the cards are the reading surface, and at 55%
+     opacity the body copy could not clear the 4.5:1 AA bar. Inactive steps stay
+     recessed at 70% rather than disappearing, so the active/inactive cue survives. */
+  .scroll-chapters article {
+    min-height: 62vh;
+    margin-block: 22px;
+    padding: 44px 24px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--paper);
+    box-shadow: var(--shadow);
+    opacity: .7;
+  }
+  .scroll-chapters article.active { opacity: 1; }
+  .scroll-chapters article h3 { font-size: 29px; }
 }
 
 /* ─── HERO PILL BADGE & LIVE PULSE ─── */
