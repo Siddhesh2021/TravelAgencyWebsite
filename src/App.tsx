@@ -9,9 +9,6 @@ const images = {
   meghalaya: "https://images.unsplash.com/photo-1742494267580-e026d3737f65?auto=format&fit=crop&w=1200&q=84",
   kerala: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=84",
   rajasthan: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=84",
-  himachal: "https://images.unsplash.com/photo-1605640840605-14ac1855827b?auto=format&fit=crop&w=1200&q=84",
-  goa: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=84",
-  uttarakhand: "https://images.unsplash.com/photo-1506461883276-594a12b11cf3?auto=format&fit=crop&w=1200&q=84",
   group: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?auto=format&fit=crop&w=1200&q=84",
   friends: "https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?auto=format&fit=crop&w=1200&q=84",
   trek: "https://images.unsplash.com/photo-1548957175-84f0f9af659e?auto=format&fit=crop&w=1200&q=84",
@@ -26,10 +23,7 @@ const backdrops = {
   meghalaya: "https://images.unsplash.com/photo-1742494267580-e026d3737f65?auto=format&fit=crop&w=1800&q=55",
   kerala: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1800&q=55",
   rajasthan: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1800&q=55",
-  himachal: "https://images.unsplash.com/photo-1605640840605-14ac1855827b?auto=format&fit=crop&w=1800&q=55",
   goa: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1800&q=55",
-  uttarakhand: "https://images.unsplash.com/photo-1506461883276-594a12b11cf3?auto=format&fit=crop&w=1800&q=55",
-  group: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?auto=format&fit=crop&w=1800&q=55",
   trek: "https://images.unsplash.com/photo-1548957175-84f0f9af659e?auto=format&fit=crop&w=1800&q=55",
 };
 
@@ -472,7 +466,6 @@ function ScrollBackdrop() {
     backdrops.meghalaya,
     backdrops.kerala,
     backdrops.rajasthan,
-    backdrops.himachal,
   ];
 
   useEffect(() => {
@@ -1435,7 +1428,7 @@ function ScrollJourney() {
               <small>{place}</small>
               <h3>{title}</h3>
               <p>{copy}</p>
-              <button onClick={() => navigateTo("/destinations")}>
+              <button onClick={() => navigateTo("/trips")}>
                 Explore {place} <Icon name="arrow" size={17} />
               </button>
             </article>
@@ -1532,129 +1525,6 @@ function TripsPage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenR
             <h2>Take our 60-second trip matcher to find your perfect itinerary.</h2>
           </div>
           <Button onClick={onOpenQuiz} icon="sparkles">Help me choose</Button>
-        </div>
-      </section>
-      <ReelsSection onOpenReel={onOpenReel} />
-      <MobilePageCta />
-    </main>
-  );
-}
-
-function DestinationsPage({ onOpenReel }: { onOpenReel: (r: any) => void }) {
-  const regions = [
-    ["North", "Snow lines, pine forests and ancient high mountain passes", "Kashmir · Ladakh · Himachal · Uttarakhand"],
-    ["West", "Golden desert cities, salt flats and coastal sunsets", "Rajasthan · Gujarat · Goa"],
-    ["South", "Emerald backwaters, coffee estates and quiet temple towns", "Kerala · Karnataka · Tamil Nadu"],
-    ["East & Northeast", "Lush rainforests, living root bridges and sacred monasteries", "Meghalaya · Sikkim · Assam · Arunachal"],
-  ];
-
-  return (
-    <main>
-      <PageHero
-        eyebrow="Across 35 states & union territories"
-        title="A country worth taking your time with."
-        copy="Explore India by terrain, culture and the stories you want to carry home with you."
-        image={images.kashmir}
-      />
-      <section className="section shell">
-        <SectionTitle
-          eyebrow="Explore the map"
-          title="Where India changes pace."
-          copy="Every region possesses its own rhythm, culinary soul and landscapes."
-        />
-        <div className="destination-page-grid">
-          {destinations.map(([name, line, image, meta], i) => (
-            <button key={name} className="destination-page-card" onClick={() => navigateTo("/trips/kashmir")}>
-              <span className="destination-number">0{i + 1}</span>
-              <img src={image} alt="" loading="lazy" />
-              <span className="image-shade" />
-              <span>
-                <small>{line}</small>
-                <strong>{name}</strong>
-                <em>{meta} · See trips <Icon name="arrow" size={17} /></em>
-              </span>
-            </button>
-          ))}
-        </div>
-      </section>
-      <section className="section region-section">
-        <img src={backdrops.uttarakhand} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-        <div className="shell">
-          <SectionTitle eyebrow="Go by region" title="Four corners. A hundred different Indias." />
-          <Reveal className="reveal-parent">
-            <div className="region-grid">
-              {regions.map(([name, copy, places], i) => (
-                <article className="reveal-child" key={name} style={{ ["--i" as string]: i }}>
-                  <span><Icon name="compass" /></span>
-                  <h3>{name}</h3>
-                  <p>{copy}</p>
-                  <small>{places}</small>
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-      <ReelsSection onOpenReel={onOpenReel} />
-      <MobilePageCta />
-    </main>
-  );
-}
-
-function ExperiencesPage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenReel: (r: any) => void }) {
-  const experiences = [
-    ["Weekend Getaways", "Leave Friday night. Return with a story.", images.himachal, "2–4 days"],
-    ["High-altitude Adventure", "Big landscapes, tested routes and expert leads.", images.ladakh, "5–9 days"],
-    ["Culture & Heritage", "Ancient traditions understood through local storytellers.", images.rajasthan, "4–7 days"],
-    ["Coastal Slow Living", "Salt air, secret coves and room to roam.", images.kerala, "4–6 days"],
-    ["Solo-Friendly Departures", "Come by yourself. Leave with lifelong friends.", images.group, "12–18 people"],
-    ["Nature & Waterfalls", "Rainforest trails, natural pools and misty mornings.", images.meghalaya, "4–8 days"],
-  ];
-
-  return (
-    <main>
-      <PageHero
-        eyebrow="Travel your way"
-        title="More than just a destination."
-        copy="Select how you want your journey to feel — wild, unhurried, social or deeply local."
-        image={images.group}
-      />
-      <section className="section shell">
-        <SectionTitle
-          eyebrow="Experience collections"
-          title="Start with what moves you."
-          copy="Tailored around shared passions, then organized down to the finest practical detail."
-        />
-        <div className="experience-grid">
-          {experiences.map(([title, copy, image, meta], i) => (
-            <button key={title} onClick={() => navigateTo("/trips")}>
-              <div>
-                <img src={image} alt="" loading="lazy" />
-                <span className="experience-icon"><Icon name={i % 2 ? "compass" : "mountain"} /></span>
-              </div>
-              <small>{meta}</small>
-              <h3>{title}</h3>
-              <p>{copy}</p>
-              <span className="text-link">Explore collection <Icon name="arrow" size={17} /></span>
-            </button>
-          ))}
-        </div>
-      </section>
-      <section className="section quiz-section">
-        <div className="shell quiz-layout">
-          <div>
-            <p className="eyebrow eyebrow--light">60-second trip matcher</p>
-            <h2>Mountains or coast? High energy or slow mornings?</h2>
-            <p>Answer three quick questions and get an instant shortlist tailored to your travel style.</p>
-            <Button onClick={onOpenQuiz} icon="sparkles">Find my travel style</Button>
-          </div>
-          <div className="quiz-graphic" onClick={onOpenQuiz} style={{ cursor: "pointer" }}>
-            <span>01</span>
-            <strong>What does your dream morning look like?</strong>
-            <button type="button">Hot chai overlooking snow peaks</button>
-            <button type="button">Barefoot stroll along coastal waves</button>
-            <button type="button">Morning coffee in an old heritage alley</button>
-          </div>
         </div>
       </section>
       <ReelsSection onOpenReel={onOpenReel} />
@@ -1777,7 +1647,7 @@ function TripDetail() {
           <img src={images.kashmir} alt="Kashmir lake and mountains" />
           <img src="https://images.unsplash.com/photo-1614591276564-7b3e69347a48?auto=format&fit=crop&w=900&q=85" alt="Houseboats on Dal Lake" />
           <img src="https://images.unsplash.com/photo-1564327287902-0ccf559d839e?auto=format&fit=crop&w=900&q=85" alt="Floating market in Kashmir" />
-          <button onClick={() => navigateTo("/destinations")}>View all 18 photos</button>
+          <button onClick={() => navigateTo("/trips")}>View all 18 photos</button>
         </div>
         <div className="detail-facts">
           {[

@@ -15,13 +15,33 @@
 import { chromium } from "playwright";
 
 const BASE = process.argv[2] ?? "http://localhost:5173";
-const ROUTES = ["/", "/trips", "/destinations", "/experiences", "/about", "/trips/kashmir", "/booking"];
+const ROUTES = ["/", "/trips", "/reviews", "/contact", "/about", "/trips/kashmir", "/booking"];
+// Retired routes. They must resolve to NotFound rather than silently rendering
+// stale markup, so they are asserted instead of walked for reveal content.
+const RETIRED = ["/destinations", "/experiences"];
 const WIDTHS = [1440, 390];
 const STEP = 600;
 const SETTLE = 110;
 
 const browser = await chromium.launch();
 let defects = 0;
+
+for (const route of RETIRED) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(BASE + route, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(600);
+  const r = await page.evaluate(() => ({
+    notFound: (document.querySelector("h1")?.textContent ?? "").includes("doesn"),
+    stale: document.querySelectorAll(".destination-page-card, .experience-grid, .region-grid, .quiz-graphic").length,
+  }));
+  if (r.notFound && r.stale === 0) {
+    console.log(`  PASS  ${route.padEnd(14)} retired -> NotFound, no stale markup`);
+  } else {
+    defects++;
+    console.log(`  FAIL  ${route.padEnd(14)} retired -> notFound:${r.notFound} staleMarkup:${r.stale}`);
+  }
+  await page.close();
+}
 
 for (const width of WIDTHS) {
   console.log(`\n########## ${width}px ##########`);

@@ -8,8 +8,11 @@
   --muted: #5a6b63;
   /* For small copy printed over a photographic veil. --muted is tuned for solid
      surfaces and lands at 4.31:1 there — short of AA once the backdrop is a
-     photo. This step clears it without going as heavy as --ink-2. */
-  --muted-strong: #4a5a52;
+     photo. Stepped again for the /about values cards, whose 12px body copy sits
+     on the lightest of those veils and measured 4.18:1 at #4a5a52. This clears
+     AA on the worst backdrop while staying short of --ink-2. Verified by
+     scripts/diagnose-backdrops.mjs, not by eye. */
+  --muted-strong: #44534c;
   --bone: #f0ece4;
   --paper: #f7f5f0;
   --white: #ffffff;
@@ -301,8 +304,8 @@ p { color: var(--ink-2); line-height: 1.72; }
 .btn--light:hover { background: rgba(255,255,255,.15); }
 .btn--text { min-height: auto; padding: 8px 0; color: var(--forest); background: transparent; }
 .btn.full { width: 100%; }
-.btn .icon, .text-link .icon { transition: transform .3s var(--ease-spring); }
-.btn:hover .icon, .text-link:hover .icon { transform: translateX(5px); }
+.btn .icon { transition: transform .3s var(--ease-spring); }
+.btn:hover .icon { transform: translateX(5px); }
 
 /* ─── HERO ─── */
 .hero { position: relative; height: min(880px, calc(100dvh - 40px)); min-height: 700px; color: var(--white); background: var(--ink); overflow: hidden; }
@@ -462,7 +465,6 @@ p { color: var(--ink-2); line-height: 1.72; }
 .upcoming-section,
 .newsletter,
 .reels-section,
-.region-section,
 .values-section {
   overflow: hidden;
 }
@@ -1339,82 +1341,6 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
 .page-cta .shell { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 50px; }
 .page-cta h2 { max-width: 800px; margin: 0; color: var(--white); }
 
-/* ─── DESTINATIONS PAGE ─── */
-.destination-page-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-.destination-page-card { position: relative; height: 410px; padding: 0; overflow: hidden; border: 0; border-radius: var(--radius); color: var(--white); background: var(--ink); text-align: left; cursor: pointer; }
-.destination-page-card:nth-child(4n + 1) { height: 520px; }
-.destination-page-card:nth-child(4n + 2) { height: 520px; }
-.destination-page-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out-expo); }
-.destination-page-card:hover img { transform: scale(1.06); }
-.destination-page-card > span:last-child { position: absolute; right: 28px; bottom: 26px; left: 28px; display: grid; }
-.destination-page-card small { color: rgba(255,255,255,.65); }
-.destination-page-card strong { margin: 5px 0 14px; font-size: 28px; font-weight: 700; }
-.destination-page-card em { display: flex; align-items: center; gap: 8px; font-size: 11px; font-style: normal; font-weight: 700; opacity: 0; transform: translateY(6px); transition: all .4s var(--ease-spring); }
-.destination-page-card:hover em { opacity: 1; transform: none; }
-.destination-number { position: absolute; z-index: 2; top: 20px; right: 22px; color: rgba(255,255,255,.6); font-size: 11px; font-weight: 700; }
-.region-section { position: relative; isolation: isolate; background-color: transparent; }
-.region-section > img {
-  position: absolute; z-index: -2; inset: -14% 0;
-  width: 100%; height: 128%; object-fit: cover;
-  filter: saturate(.85) contrast(1.22) brightness(1.03);
-  transform: translate3d(0, var(--parallax, 0px), 0) scale(1.04);
-  will-change: transform;
-}
-.region-section::before {
-  position: absolute; z-index: -1; inset: 0; content: "";
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E"),
-    linear-gradient(160deg, rgba(247,245,240,.7) 0%, rgba(236,241,234,.66) 55%, rgba(247,245,240,.74) 100%);
-  background-size: 150px, cover;
-  background-blend-mode: soft-light, normal;
-}
-.region-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.region-grid article {
-  padding: 30px;
-  border: 1px solid rgba(255,255,255,.6);
-  border-radius: 14px;
-  background: rgba(255,255,255,.6);
-  box-shadow: inset 0 1px rgba(255,255,255,.7);
-  backdrop-filter: blur(14px);
-  transition: all .35s var(--ease-spring);
-}
-.region-grid article:hover { transform: translateY(-5px); box-shadow: var(--shadow); background: rgba(255,255,255,.8); }
-.region-grid article > span { display: grid; width: 44px; height: 44px; margin-bottom: 28px; place-items: center; border-radius: 10px; color: var(--forest); background: var(--forest-soft); }
-.region-grid h3 { margin-bottom: 9px; }
-.region-grid p { color: var(--muted-strong); font-size: 12px; }
-.region-grid small { color: var(--amber-dark); font-size: 9px; font-weight: 700; }
-
-/* ─── EXPERIENCES ─── */
-.experience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 18px; }
-.experience-grid > button { padding: 0 0 22px; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; }
-.experience-grid > button > div { position: relative; height: 280px; margin-bottom: 18px; overflow: hidden; border-radius: 14px; }
-.experience-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease-out-expo); }
-.experience-grid button:hover img { transform: scale(1.06); }
-.experience-icon { position: absolute; right: 14px; bottom: 14px; display: grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; color: var(--forest); background: rgba(255,255,255,.9); box-shadow: var(--shadow-small); backdrop-filter: blur(8px); transition: transform .35s var(--ease-spring); }
-.experience-grid button:hover .experience-icon { transform: rotate(15deg) scale(1.05); }
-.experience-grid small { color: var(--amber-dark); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
-.experience-grid h3 { margin: 7px 0; font-size: 20px; }
-.experience-grid p { margin-bottom: 14px; color: var(--muted); font-size: 12px; }
-.text-link { display: flex; align-items: center; gap: 8px; color: var(--forest); font-size: 11px; font-weight: 700; }
-.quiz-section {
-  position: relative; isolation: isolate; overflow: hidden;
-  color: var(--white);
-  background-color: var(--forest-deep);
-}
-.quiz-section::before {
-  position: absolute; z-index: -1; inset: 0; content: "";
-  background: linear-gradient(130deg, rgba(12,42,30,.94) 0%, rgba(26,67,50,.85) 50%, rgba(9,32,24,.95) 100%), radial-gradient(ellipse at 70% 20%, rgba(212,135,62,.12), transparent 45%);
-}
-.quiz-layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 100px; }
-.quiz-layout h2 { color: var(--white); }
-.quiz-layout p { color: rgba(255,255,255,.6); }
-.quiz-graphic { display: grid; gap: 10px; padding: 34px; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; background: rgba(255,255,255,.05); box-shadow: 0 28px 60px rgba(0,0,0,.2), inset 0 1px rgba(255,255,255,.08); backdrop-filter: blur(10px); transform: rotate(1.5deg); transition: transform .4s var(--ease-spring); }
-.quiz-graphic:hover { transform: rotate(0); }
-.quiz-graphic > span { color: var(--amber); font-size: 11px; font-weight: 700; }
-.quiz-graphic > strong { margin-bottom: 14px; font-size: 19px; }
-.quiz-graphic button { padding: 15px; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; color: var(--white); background: rgba(255,255,255,.04); text-align: left; cursor: pointer; transition: all .25s var(--ease-spring); }
-.quiz-graphic button:hover { background: rgba(255,255,255,.12); transform: translateX(5px); }
-
 /* ─── ABOUT PAGE ─── */
 .about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; }
 .about-intro p { color: var(--muted); font-size: 16px; }
@@ -1468,8 +1394,7 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   .detail-layout { grid-template-columns: minmax(0, 1fr) 310px; gap: 40px; }
   .footer-grid { grid-template-columns: 2fr repeat(2, 1fr); }
   .reels-track { grid-template-columns: repeat(2, 1fr); }
-  .region-grid, .value-grid { grid-template-columns: repeat(2, 1fr); }
-  .experience-grid { grid-template-columns: repeat(2, 1fr); }
+  .value-grid { grid-template-columns: repeat(2, 1fr); }
   .scroll-journey-layout { gap: 48px; }
   .scroll-intro h2 { font-size: 39px; }
 }
@@ -1594,12 +1519,6 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   .trips-page .trip-grid { display: grid; width: 100%; grid-template-columns: 1fr; overflow: visible; }
   .trips-page .trip-card { width: 100%; }
   .page-cta .shell { display: grid; }
-  .destination-page-grid { grid-template-columns: 1fr; }
-  .destination-page-card, .destination-page-card:nth-child(n) { height: 420px; }
-  .destination-page-card em { opacity: 1; transform: none; }
-  .region-grid { grid-template-columns: 1fr; }
-  .experience-grid { grid-template-columns: 1fr; }
-  .quiz-layout { grid-template-columns: 1fr; gap: 45px; }
   .about-intro { grid-template-columns: 1fr; gap: 25px; }
   .impact-grid { grid-template-columns: 1fr 1fr; gap: 28px 0; }
   .impact-grid > div { padding: 12px; border-right: 0; }
@@ -2306,7 +2225,6 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
 /* Hover-only affordances must not stick on touch devices. */
 @media (hover: none) {
   .spotlight::after { display: none; }
-  .destination-info > span, .destination-page-card em { opacity: 1; transform: none; }
 }
 
 

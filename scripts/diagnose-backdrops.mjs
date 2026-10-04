@@ -34,7 +34,6 @@ const SECTIONS = [
   { route: "/", selector: ".process-section", label: "home / process (dark)" },
   { route: "/", selector: ".reels-section", label: "home / reels (dark)" },
   { route: "/", selector: ".newsletter", label: "home / newsletter (dark)" },
-  { route: "/destinations", selector: ".region-section", label: "destinations / region" },
   { route: "/about", selector: ".values-section", label: "about / values" },
   { route: "/", selector: ".footer-band", label: "footer / photo band" },
   { route: "/", selector: ".footer-surface", label: "footer / link ground" },
@@ -45,8 +44,6 @@ const TEXT_CHECKS = [
   { route: "/", selector: ".section--tint .section-copy", label: "destinations copy" },
   { route: "/", selector: ".stories-section .section-copy", label: "stories copy" },
   { route: "/", selector: ".upcoming-section .section-copy", label: "upcoming copy" },
-  { route: "/destinations", selector: ".region-grid article h3", label: "region card heading" },
-  { route: "/destinations", selector: ".region-grid article p", label: "region card body" },
   { route: "/about", selector: ".value-grid article h3", label: "values card heading" },
   { route: "/", selector: ".process-section .section-copy", label: "process copy (dark)" },
   { route: "/", selector: ".process-step h3", label: "process step heading (dark)" },
@@ -59,13 +56,11 @@ const TEXT_CHECKS = [
   { route: "/", selector: ".footer-col button", label: "footer link" },
   { route: "/", selector: ".footer-bottom span", label: "footer legal line" },
   { route: "/", selector: ".section--tint .eyebrow", label: "destinations eyebrow" },
-  { route: "/", selector: ".region-grid small", label: "region card tag" },
-  { route: "/destinations", selector: ".region-grid article p", label: "region card body" },
-  { route: "/destinations", selector: ".value-grid article p", label: "values card body" },
+  { route: "/about", selector: ".value-grid article p", label: "values card body" },
   { route: "/trips", selector: ".trip-meta", label: "trip card meta" },
   { route: "/trips", selector: ".price small", label: "price note" },
   { route: "/", selector: ".trust-grid span", label: "trust strip label" },
-  { route: "/", selector: ".breadcrumb", label: "breadcrumb" },
+  { route: "/trips/kashmir", selector: ".breadcrumb", label: "breadcrumb" },
 ];
 
 /** Decodes a PNG buffer and returns luminance / saturation statistics.
@@ -292,9 +287,12 @@ async function main() {
     // WCAG: 3.0 for large text (>=24px, or >=18.66px bold), else 4.5.
     const isLarge = style.fontSize >= 24 || (style.fontWeight >= 700 && style.fontSize >= 18.66);
     const threshold = isLarge ? 3 : 4.5;
-    const verdict =
-      ratio === null ? "n/a" : ratio >= threshold ? "AA pass" : ratio >= threshold - 0.6 ? "borderline" : "FAIL";
-    if (verdict === "FAIL") fails.push(t.label);
+    // "borderline" is still below AA. It used to be reported without counting as a
+    // defect, which is how a 12px/400 label sat at 4.18:1 for several releases
+    // with this gate still exiting 0. Anything under threshold is now a defect;
+    // the label is kept so the size of the shortfall stays visible in the output.
+    const verdict = ratio === null ? "n/a" : ratio >= threshold ? "AA pass" : ratio >= threshold - 0.6 ? "borderline" : "FAIL";
+    if (verdict === "FAIL" || verdict === "borderline") fails.push(t.label);
 
     console.log(
       t.label.padEnd(30) +
