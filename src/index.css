@@ -1701,24 +1701,7 @@ strong, .price strong, .booking-price strong, .trust-grid strong { font-variant-
   box-shadow: 0 2px 8px rgba(212, 135, 62, 0.4);
 }
 
-/* ─── CURRENCY SELECTOR ─── */
-.currency-selector select {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--soft-line);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
-}
-.currency-selector select:hover, .currency-selector select:focus {
-  border-color: var(--amber);
-  box-shadow: 0 0 0 3px var(--amber-glow);
-}
+
 
 /* ─── CARD FAVORITE BUTTON ─── */
 .card-fav-btn {

@@ -69,17 +69,13 @@ const destinations = [
   ["Uttarakhand", "Sacred towns & Himalayan trails", images.uttarakhand, "7 Trips Available"],
 ];
 
-const currencies: Record<string, { symbol: string; rate: number; label: string }> = {
-  INR: { symbol: "₹", rate: 1, label: "INR (₹)" },
-  USD: { symbol: "$", rate: 0.012, label: "USD ($)" },
-  EUR: { symbol: "€", rate: 0.011, label: "EUR (€)" },
-  GBP: { symbol: "£", rate: 0.0095, label: "GBP (£)" },
-};
-
-function formatPrice(amountInr: number, currency = "INR") {
-  const curr = currencies[currency] || currencies.INR;
-  const converted = Math.round(amountInr * curr.rate);
-  return `${curr.symbol}${converted.toLocaleString("en-IN")}`;
+/**
+ * Prices are INR across the whole site. The only reason this is a function rather
+ * than a template is `en-IN` digit grouping, which is what puts the lakh/crore
+ * separators in the right place for Indian amounts.
+ */
+function formatPrice(amountInr: number) {
+  return `₹${amountInr.toLocaleString("en-IN")}`;
 }
 
 function Icon({ name, size = 20 }: { name: string; size?: number }) {
@@ -570,7 +566,7 @@ function HeroSpotlight() {
   return <div className="hero-spotlight" ref={ref} />;
 }
 
-function Header({ onMenu, currentPath, onOpenSearch, currency, onCurrencyChange }: { onMenu: () => void; currentPath: string; onOpenSearch: () => void; currency: string; onCurrencyChange: (c: string) => void }) {
+function Header({ onMenu, currentPath, onOpenSearch }: { onMenu: () => void; currentPath: string; onOpenSearch: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const progressRef = useRef<HTMLSpanElement>(null);
@@ -621,14 +617,6 @@ function Header({ onMenu, currentPath, onOpenSearch, currency, onCurrencyChange 
         </nav>
         <div className="header-actions">
           <LanguageSelector />
-          <div className="currency-selector">
-            <select value={currency} onChange={(e) => onCurrencyChange(e.target.value)} aria-label="Select Currency">
-              <option value="INR">INR (₹)</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-            </select>
-          </div>
           <button className="icon-button search-button" aria-label="Search journeys" onClick={onOpenSearch}>
             <Icon name="search" />
             <span className="kbd-hint">⌘K</span>
@@ -662,7 +650,7 @@ function SectionTitle({ eyebrow, title, copy, action }: { eyebrow?: string; titl
   );
 }
 
-function TripCard({ trip, currency = "INR", onFavorite, isFav = false, index = 0 }: { trip: Trip; currency?: string; onFavorite?: (id: string) => void; isFav?: boolean; index?: number }) {
+function TripCard({ trip, onFavorite, isFav = false, index = 0 }: { trip: Trip; onFavorite?: (id: string) => void; isFav?: boolean; index?: number }) {
   const cardRef = useCardMotion<HTMLElement>(3.5);
 
   const handleFavorite = (e: React.MouseEvent) => {
@@ -705,7 +693,7 @@ function TripCard({ trip, currency = "INR", onFavorite, isFav = false, index = 0
         <div className="trip-footer">
           <div className="price">
             <small>Starts at</small>
-            <strong>{formatPrice(trip.priceInr, currency)}</strong>
+            <strong>{formatPrice(trip.priceInr)}</strong>
             <small>/ person</small>
           </div>
           <Button variant="text" icon="arrow" onClick={() => navigateTo(`/trips/${trip.id}`)}>View Trip</Button>
@@ -1008,7 +996,7 @@ function SearchModule({ onOpenSearch }: { onOpenSearch?: () => void }) {
   );
 }
 
-function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: string; onOpenQuiz: () => void; onOpenReel: (r: any) => void }) {
+function HomePage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenReel: (r: any) => void }) {
   const [openFaq, setOpenFaq] = useState(0);
   const [toast, setToast] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -1081,7 +1069,6 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
               <TripCard
                 key={trip.id}
                 trip={trip}
-                currency={currency}
                 onFavorite={toggleFav}
                 isFav={favorites.includes(trip.id)}
                 index={i}
@@ -1284,7 +1271,7 @@ function HomePage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: str
                     <span>{trip.line}</span>
                   </div>
                   <span className="desktop-only">{trip.duration}</span>
-                  <span className="departure-price">{formatPrice(trip.priceInr, currency)}<small>per person</small></span>
+                  <span className="departure-price">{formatPrice(trip.priceInr)}<small>per person</small></span>
                   <span className="availability"><i />{trip.seats}</span>
                   <span className="round-arrow"><Icon name="arrow" size={18} /></span>
                 </button>
@@ -1515,7 +1502,7 @@ function PageHero({ eyebrow, title, copy, image }: { eyebrow: string; title: str
   );
 }
 
-function TripsPage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: string; onOpenQuiz: () => void; onOpenReel: (r: any) => void }) {
+function TripsPage({ onOpenQuiz, onOpenReel }: { onOpenQuiz: () => void; onOpenReel: (r: any) => void }) {
   const [filter, setFilter] = useState("All trips");
   const filters = ["All trips", "Upcoming", "Weekend", "Adventure", "Culture", "Solo-friendly"];
 
@@ -1558,7 +1545,7 @@ function TripsPage({ currency = "INR", onOpenQuiz, onOpenReel }: { currency?: st
         <Reveal>
           <div className="trip-grid">
             {filteredTrips.map((trip, i) => (
-              <TripCard key={trip.id} trip={trip} currency={currency} index={i} />
+              <TripCard key={trip.id} trip={trip} index={i} />
             ))}
           </div>
         </Reveal>
@@ -1786,7 +1773,7 @@ function AboutPage({ onOpenReel }: { onOpenReel: (r: any) => void }) {
   );
 }
 
-function TripDetail({ currency = "INR" }: { currency?: string }) {
+function TripDetail() {
   const [faq, setFaq] = useState(0);
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -1994,7 +1981,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
           <span className="badge">Next departure · 18 Oct 2025</span>
           <div className="booking-price">
             <small>Starting from</small>
-            <strong>{formatPrice(24999, currency)}</strong>
+            <strong>{formatPrice(24999)}</strong>
             <span>per person</span>
           </div>
           <label>
@@ -2007,7 +1994,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
           </label>
           <div className="mini-row">
             <span>Trip base price</span>
-            <strong>{formatPrice(24999, currency)}</strong>
+            <strong>{formatPrice(24999)}</strong>
           </div>
           <div className="mini-row">
             <span>Taxes & permits</span>
@@ -2029,7 +2016,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
       <div className="mobile-booking-bar">
         <div>
           <small>From</small>
-          <strong>{formatPrice(24999, currency)}</strong>
+          <strong>{formatPrice(24999)}</strong>
         </div>
         <Button onClick={() => navigateTo("/booking")}>Reserve Seat</Button>
       </div>
@@ -2039,7 +2026,7 @@ function TripDetail({ currency = "INR" }: { currency?: string }) {
 
 const bookingSteps = ["Departure", "Travellers", "Your details", "Add-ons", "Payment", "Confirmed"];
 
-function BookingFlow({ currency = "INR" }: { currency?: string }) {
+function BookingFlow() {
   const [step, setStep] = useState(0);
   const [travellers, setTravellers] = useState(1);
   const [selectedDate, setSelectedDate] = useState(0);
@@ -2097,7 +2084,7 @@ function BookingFlow({ currency = "INR" }: { currency?: string }) {
                         <strong>{d[0]}</strong>
                         <small><i />{d[1]}</small>
                       </div>
-                      <strong>{formatPrice(d[2] as number, currency)}</strong>
+                      <strong>{formatPrice(d[2] as number)}</strong>
                     </button>
                   ))}
                 </div>
@@ -2187,7 +2174,7 @@ function BookingFlow({ currency = "INR" }: { currency?: string }) {
                         <strong>{title}</strong>
                         <small>{copy}</small>
                       </div>
-                      <strong>{formatPrice(price as number, currency)}</strong>
+                      <strong>{formatPrice(price as number)}</strong>
                     </button>
                   ))}
                 </div>
@@ -2225,7 +2212,7 @@ function BookingFlow({ currency = "INR" }: { currency?: string }) {
                 <Button variant="secondary" onClick={back}>Back</Button>
               ) : <span />}
               <Button onClick={next} icon={step === 4 ? undefined : "arrow"}>
-                {step === 4 ? `Pay Deposit ${formatPrice(totalDue, currency)}` : "Continue"}
+                {step === 4 ? `Pay Deposit ${formatPrice(totalDue)}` : "Continue"}
               </Button>
             </div>
           </section>
@@ -2239,17 +2226,17 @@ function BookingFlow({ currency = "INR" }: { currency?: string }) {
             <hr />
             <div>
               <span>Trip base ({travellers}x)</span>
-              <strong>{formatPrice(basePrice, currency)}</strong>
+              <strong>{formatPrice(basePrice)}</strong>
             </div>
             {addons.length > 0 && (
               <div>
                 <span>Selected Add-ons</span>
-                <strong>{formatPrice(addOnTotal, currency)}</strong>
+                <strong>{formatPrice(addOnTotal)}</strong>
               </div>
             )}
             <div className="total">
               <span>Deposit Due Today (25%)</span>
-              <strong>{formatPrice(totalDue, currency)}</strong>
+              <strong>{formatPrice(totalDue)}</strong>
             </div>
             <small>Includes all taxes and permits. Remaining balance due 18 Sep 2025.</small>
           </aside>
@@ -2331,7 +2318,6 @@ function SiteLayout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [activeReel, setActiveReel] = useState<{ title: string; copy: string; image: string; views: string } | null>(null);
-  const [currency, setCurrency] = useState("INR");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -2380,8 +2366,6 @@ function SiteLayout() {
           currentPath={location.pathname}
           onMenu={() => setMenu(true)}
           onOpenSearch={() => setIsSearchOpen(true)}
-          currency={currency}
-          onCurrencyChange={setCurrency}
         />
       )}
 
@@ -2416,13 +2400,13 @@ function SiteLayout() {
       )}
 
       <div className="route-transition" key={location.pathname} id="main-content">
-        {location.pathname === "/" && <HomePage currency={currency} onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
-        {location.pathname === "/trips" && <TripsPage currency={currency} onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
+        {location.pathname === "/" && <HomePage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
+        {location.pathname === "/trips" && <TripsPage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
         {location.pathname === "/destinations" && <DestinationsPage onOpenReel={setActiveReel} />}
         {location.pathname === "/experiences" && <ExperiencesPage onOpenQuiz={() => setIsQuizOpen(true)} onOpenReel={setActiveReel} />}
         {location.pathname === "/about" && <AboutPage onOpenReel={setActiveReel} />}
-        {location.pathname.startsWith("/trips/") && <TripDetail currency={currency} />}
-        {location.pathname === "/booking" && <BookingFlow currency={currency} />}
+        {location.pathname.startsWith("/trips/") && <TripDetail />}
+        {location.pathname === "/booking" && <BookingFlow />}
         {!["/", "/trips", "/destinations", "/experiences", "/about", "/booking"].includes(location.pathname) && !location.pathname.startsWith("/trips/") && <NotFound />}
       </div>
 
